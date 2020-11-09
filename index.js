@@ -37,7 +37,7 @@ client.on('message', message => {
     if(!message.content.startsWith(prefix) || message.author.bot) return;
 
     if (db.get(message.author.id) == null) {
-        db.set(message.author.id, {karma: 0, silver: 0, gold: 0, platinum: 0});
+        db.set(message.author.id, {karma: 0, bronze: 0, silver: 0, gold: 0});
     }
 
     const args = message.content.slice(prefix.length).split(/ +/)
