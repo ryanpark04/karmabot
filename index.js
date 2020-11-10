@@ -30,7 +30,7 @@ client.on('messageReactionRemove', async (reaction, user) => {
 });
 
 client.on('message', message => {
-    if (message.content.includes(client.user.id) || message.content.includes('<@&774329293702430771>')) {
+    if (message.content.includes(client.user.id) || message.content.includes('<@&775540390170329100>')) {
         client.commands.get('mentioned').execute(message);
     }
 
