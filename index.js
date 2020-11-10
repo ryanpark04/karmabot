@@ -2,7 +2,7 @@ const Discord = require('discord.js');
 const db = require("quick.db");
 const client = new Discord.Client({ partials: Object.values(Discord.Constants.PartialTypes) });
 
-const prefix = 'r?';
+const prefix = '!';
 
 const fs = require('fs');
 
