@@ -9,6 +9,9 @@ module.exports = {
         if (db.get(sender) == null) {
             db.set(sender, {karma: 0, bronze: 0, silver: 0, gold: 0});
         }
+        if (sender == user.id) {
+            return;
+        }
         switch(reaction.emoji.name) {
             case '⬇️':
                 db.set(sender, {karma: db.get(`${sender}.karma`) + 1, bronze: db.get(`${sender}.bronze`),  silver: db.get(`${sender}.silver`),  gold: db.get(`${sender}.gold`)});

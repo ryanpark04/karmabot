@@ -9,9 +9,32 @@ module.exports = {
         if (db.get(sender) == null) {
             db.set(sender, {karma: 0, bronze: 0, silver: 0, gold: 0});
         }
+        if (sender == user.id) {
+            
+            switch(reaction.emoji.name) {
+                case '⬇️':
+                    user.send("you can't downvote your own message");
+                    break;
+                case '⬆️':
+                    user.send("you can't upvote your own message");
+                    break;
+                case '🥉':
+                    user.send("you can't award your own message");
+                    break;
+                case '🥈':
+                    user.send("you can't award your own message");
+                    break;
+                case '🥇':
+                    user.send("you can't award your own message");
+                    break;
+            }
+            reaction.remove();
+            return;
+            
+        }
         switch(reaction.emoji.name) {
             case '⬇️':
-                db.set(sender, {karma: db.get(`${sender}.karma`) - 1, bronze: db.get(`${sender}.bronze`),  silver: db.get(`${sender}.silver`),  gold: db.get(`${sender}.gold`)});
+                db.set(sender, {karma: db.get(`${sender}.karma`) - 1, bronze: db.get(`${sender}.bronze`),  silver: db.get(`${sender}.silver`),  gold: db.get(`${sender}.gold`)});   
                 break;
             case '⬆️':
                 db.set(sender, {karma: db.get(`${sender}.karma`) + 1, bronze: db.get(`${sender}.bronze`),  silver: db.get(`${sender}.silver`),  gold: db.get(`${sender}.gold`)});
