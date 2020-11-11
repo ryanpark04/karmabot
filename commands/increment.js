@@ -4,31 +4,34 @@ const db = require("quick.db");
 module.exports = {
     name: 'increment',
     description: "this increments karma and awards",
-    execute(reaction, user) {
+    async execute(reaction, user) {
         let sender = reaction.message.author.id
         if (db.get(sender) == null) {
             db.set(sender, {karma: 0, bronze: 0, silver: 0, gold: 0});
         }
         if (sender == user.id) {
-            
             switch(reaction.emoji.name) {
                 case '⬇️':
-                    user.send("you can't downvote your own message");
+                    reaction.users.remove(user.id);
+                    user.send("you can't downvote your own messages");
                     break;
                 case '⬆️':
-                    user.send("you can't upvote your own message");
+                    reaction.users.remove(user.id);
+                    user.send("you can't upvote your own messages");
                     break;
                 case '🥉':
-                    user.send("you can't award your own message");
+                    reaction.users.remove(user.id);
+                    user.send("you can't award your own messages");
                     break;
                 case '🥈':
-                    user.send("you can't award your own message");
+                    reaction.users.remove(user.id);
+                    user.send("you can't award your own messages");
                     break;
                 case '🥇':
-                    user.send("you can't award your own message");
+                    reaction.users.remove(user.id);
+                    user.send("you can't award your own messages");
                     break;
             }
-            reaction.remove();
             return;
             
         }

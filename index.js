@@ -21,7 +21,9 @@ client.once('ready', () => {
 })
 
 client.on('messageReactionAdd', async (reaction, user) => {
-    if (reaction.message.partial) await reaction.message.fetch();
+    if (reaction.partial) {
+        await reaction.fetch();
+    }
     client.commands.get('increment').execute(reaction, user);
 });
 
