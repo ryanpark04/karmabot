@@ -4,7 +4,7 @@ const fs = require('fs');
 
 const client = new Discord.Client({ partials: Object.values(Discord.Constants.PartialTypes) });
 
-const prefix = 'hello';
+const prefix = 'k!';
 
 client.commands = new Discord.Collection();
 
