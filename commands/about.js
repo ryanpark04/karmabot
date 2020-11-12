@@ -10,5 +10,4 @@ module.exports = {
         .setFooter('Made with discord.js', 'https://i.imgur.com/wSTFkRM.png');
         message.channel.send(exampleEmbed);
     }
-
 }

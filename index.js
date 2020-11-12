@@ -1,11 +1,10 @@
 const Discord = require('discord.js');
 const db = require("quick.db");
-const client = new Discord.Client({ partials: Object.values(Discord.Constants.PartialTypes) });
-
-const prefix = 'k!';
-
 const fs = require('fs');
 
+const client = new Discord.Client({ partials: Object.values(Discord.Constants.PartialTypes) });
+
+const prefix = 'hello';
 
 client.commands = new Discord.Collection();
 
@@ -28,7 +27,9 @@ client.on('messageReactionAdd', async (reaction, user) => {
 });
 
 client.on('messageReactionRemove', async (reaction, user) => {
-    if (reaction.message.partial) await reaction.message.fetch();
+    if (reaction.partial) {
+        await reaction.fetch();
+    }
     client.commands.get('decrement').execute(reaction, user);
 });
 
@@ -51,15 +52,15 @@ client.on('message', message => {
         client.commands.get('help').execute(message, client, prefix);
 
     } else if (command == 'karma')  {
-        if (getUserFromMention(args[0]) != undefined) {
-            let otheruser = getUserFromMention(args[0]);
-            client.commands.get('otheruserskarma').execute(message, otheruser);
+        const otherUser = getUserFromMention(args[0]);
+        if (otherUser != undefined) {
+            client.commands.get('otheruserskarma').execute(message, otherUser);
         } else {
-            client.commands.get('karma').execute(message, args);
+            client.commands.get('karma').execute(message);
         }
 
     } else if (command == 'ping') {
-        client.commands.get('ping').execute(message, args);
+        client.commands.get('ping').execute(message);
 
     } else if (command == 'about') {
         client.commands.get('about').execute(message);
@@ -67,7 +68,9 @@ client.on('message', message => {
 })
 
 function getUserFromMention(mention) {
-    if (!mention) return;
+    if (!mention){
+        return;
+    } 
 
 	if (mention.startsWith('<@') && mention.endsWith('>')) {
 		mention = mention.slice(2, -1);

@@ -4,11 +4,11 @@ const db = require("quick.db");
 module.exports = {
     name: 'karma',
     description: "displays your karma and awards",
-    execute(message, args) {
-        let karmaAmount = db.get(`${message.author.id}.karma`);
-        let bronzeAmount = db.get(`${message.author.id}.bronze`);
-        let silverAmount = db.get(`${message.author.id}.silver`);
-        let goldAmount = db.get(`${message.author.id}.gold`);
+    execute(message) {
+        const karmaAmount = db.get(`${message.author.id}.karma`);
+        const bronzeAmount = db.get(`${message.author.id}.bronze`);
+        const silverAmount = db.get(`${message.author.id}.silver`);
+        const goldAmount = db.get(`${message.author.id}.gold`);
 
         const karma = '⬆️';
         const bronze = '🥉';
@@ -22,5 +22,4 @@ module.exports = {
             .setTimestamp();
         message.channel.send(embed); 
     }
-
 }

@@ -5,8 +5,7 @@ module.exports = {
     name: 'decrement',
     description: "this decrements karma and awards",
     execute(reaction, user) {
-        
-        let sender = reaction.message.author.id
+        const sender = reaction.message.author.id;
         if (db.get(sender) == null) {
             db.set(sender, {karma: 0, bronze: 0, silver: 0, gold: 0});
         }
