@@ -20,7 +20,7 @@ module.exports = {
         const gold = '🥇';
 
         const embed = new Discord.MessageEmbed()
-            .setColor('#FF4500')
+            .setColor('#202225')
             .setAuthor(otherUser.username, otherUser.displayAvatarURL({ dynamic: true }))
             .setDescription(`${karma} **${karmaAmount}**` + '\xa0\xa0\xa0\xa0' + `${bronze} **${bronzeAmount}**` + '\xa0\xa0\xa0\xa0' + `${silver} **${silverAmount}**` + '\xa0\xa0\xa0\xa0' + `${gold} **${goldAmount}**`)
             .setTimestamp();
