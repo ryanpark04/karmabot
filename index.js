@@ -35,7 +35,7 @@ client.on('messageReactionRemove', async (reaction, user) => {
 
 client.on('message', message => {
     if(!message.content.startsWith(prefix) || message.author.bot){
-        if (message.mentions.has(client.user) && !message.content.includes('@everyone')  && !message.content.includes('@here')) {
+        if (message.content == '<@!775463174874464266>') {
             client.commands.get(client.commands.get('mentioned').execute(message, prefix));
         }
         return;

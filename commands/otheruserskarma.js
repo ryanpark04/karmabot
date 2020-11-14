@@ -14,15 +14,9 @@ module.exports = {
         const silverAmount = db.get(`${user}.silver`);
         const goldAmount = db.get(`${user}.gold`);
 
-        const karma = '⬆️';
-        const bronze = '🥉';
-        const silver = '🥈';
-        const gold = '🥇';
-
         const embed = new Discord.MessageEmbed()
-            .setColor('#202225')
             .setAuthor(otherUser.username, otherUser.displayAvatarURL({ dynamic: true }))
-            .setDescription(`${karma} **${karmaAmount}**` + '\xa0\xa0\xa0\xa0' + `${bronze} **${bronzeAmount}**` + '\xa0\xa0\xa0\xa0' + `${silver} **${silverAmount}**` + '\xa0\xa0\xa0\xa0' + `${gold} **${goldAmount}**`)
+            .setDescription(`⬆️ **${karmaAmount}**` + '\xa0\xa0\xa0\xa0' + `🥉 **${bronzeAmount}**` + '\xa0\xa0\xa0\xa0' + `🥈 **${silverAmount}**` + '\xa0\xa0\xa0\xa0' + `🥇 **${goldAmount}**`)
             .setTimestamp();
         message.channel.send(embed); 
     }

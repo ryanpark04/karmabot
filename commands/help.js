@@ -5,7 +5,6 @@ module.exports = {
     description: "displays instructions and list of commands",
     execute(message, client, prefix) {
         const exampleEmbed = new Discord.MessageEmbed()
-	    .setColor('#202225')
         .setAuthor(client.user.username, client.user.displayAvatarURL({ dynamic: true }))
 	    .setDescription("**react to someone else's message with...** \n ⬆️ or ⬇️ to upvote or downvote it \n 🥉 if you really like it \n 🥈 if you really really like it  \n 🥇 if you think it's amazing")
 	    .addFields(
