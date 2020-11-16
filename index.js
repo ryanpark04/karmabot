@@ -38,8 +38,10 @@ client.on('message', message => {
         return;
     }
 
-    if(!message.content.startsWith(prefix) || message.author.bot){
-        if (message.content == '<@!775463174874464266>') {
+    const content = message.content.toLowerCase();
+
+    if(!content.startsWith(prefix) || message.author.bot){
+        if (content == '<@!775463174874464266>') {
             client.commands.get(client.commands.get('mentioned').execute(message, prefix));
         }
         return;
@@ -49,8 +51,8 @@ client.on('message', message => {
         db.set(message.author.id, {karma: 0, bronze: 0, silver: 0, gold: 0});
     }
 
-    const args = message.content.slice(prefix.length).split(/ +/)
-    const command = args.shift().toLowerCase();
+    const args = content.slice(prefix.length).split(/ +/)
+    const command = args.shift()
     
     if (command === 'help') {
         client.commands.get('help').execute(message, client, prefix);
