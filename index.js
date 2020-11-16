@@ -70,7 +70,11 @@ client.on('message', message => {
 
     } else if (command == 'about') {
         client.commands.get('about').execute(message);
+	    
+    } else if (command == 'stan') {
+        client.commands.get('stan').execute(message);
     }
+	
 })
 
 function getUserFromMention(mention) {
