@@ -87,4 +87,4 @@ function getUserFromMention(mention) {
 	}
 }
 
-client.login(process.env.KARMABOT_UNIVERSAL_TOKEN);
+client.login(process.env.KARMABOT_TOKEN);
