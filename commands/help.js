@@ -6,7 +6,7 @@ module.exports = {
     execute(message, client, prefix) {
         const exampleEmbed = new Discord.MessageEmbed()
         .setAuthor(client.user.username, client.user.displayAvatarURL({ dynamic: true }))
-	    .setDescription("**react to someone else's message with...** \n ⬆️ or ⬇️ to upvote or downvote it \n 🥉 if you really like it \n 🥈 if you really really like it  \n 🥇 if you think it's amazing")
+	    .setDescription("**React to someone else's message with...** \n ⬆️ or ⬇️ to upvote or downvote it \n 🥉 if you really like it \n 🥈 if you really really like it  \n 🥇 if you think it's amazing")
 	    .addFields(
 		    { name: `${prefix}karma`, value: client.commands.get('karma').description },
 		    { name: `${prefix}karma @user`, value: client.commands.get('otheruserskarma').description},
