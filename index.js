@@ -1,10 +1,11 @@
 const Discord = require('discord.js');
-const db = require("quick.db");
 const fs = require('fs');
 
 const client = new Discord.Client({ partials: Object.values(Discord.Constants.PartialTypes) });
 
 const prefix = 'k!';
+
+const mongo = require('./utils/mongo');
 
 client.commands = new Discord.Collection();
 
@@ -14,9 +15,10 @@ for (const file of commandFiles) {
     client.commands.set(command.name, command);
 }
 
-client.once('ready', () => {
+client.once('ready', async () => {
     client.user.setActivity(`${prefix}help`, {type: 'PLAYING' });
     console.log('karmabot is online!');
+
 })
 
 client.on('messageReactionAdd', async (reaction, user) => {
@@ -33,7 +35,7 @@ client.on('messageReactionRemove', async (reaction, user) => {
     client.commands.get('decrement').execute(reaction, user);
 });
 
-client.on('message', message => {
+client.on('message', async (message) => {
     if (message.guild === null) {
         return;
     }
@@ -45,10 +47,6 @@ client.on('message', message => {
             client.commands.get(client.commands.get('mentioned').execute(message, prefix));
         }
         return;
-    } 
-
-    if (db.get(message.author.id) == null) {
-        db.set(message.author.id, {karma: 0, bronze: 0, silver: 0, gold: 0});
     }
 
     const args = content.slice(prefix.length).split(/ +/)

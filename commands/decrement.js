@@ -1,33 +1,89 @@
 const Discord = require('discord.js');
-const db = require("quick.db");
+const mongo = require('../utils/mongo');
+const userSchema = require('../schemas/user-schema');
 
 module.exports = {
     name: 'decrement',
     description: "this decrements karma and awards",
-    execute(reaction, user) {
+    async execute(reaction, user) {
         const sender = reaction.message.author.id;
-        if (db.get(sender) == null) {
-            db.set(sender, {karma: 0, bronze: 0, silver: 0, gold: 0});
-        }
         if (sender == user.id) {
             return;
         }
         switch(reaction.emoji.name) {
             case '⬇️':
-                db.set(sender, {karma: db.get(`${sender}.karma`) + 1, bronze: db.get(`${sender}.bronze`),  silver: db.get(`${sender}.silver`),  gold: db.get(`${sender}.gold`)});
+                karmaAmount = 1;
+                bronzeAmount = 0;
+                silverAmount = 0;
+                goldAmount = 0;
+                incrementer = {
+                    karma: 1
+                };
                 break;
             case '⬆️':
-                db.set(sender, {karma: db.get(`${sender}.karma`) - 1, bronze: db.get(`${sender}.bronze`),  silver: db.get(`${sender}.silver`),  gold: db.get(`${sender}.gold`)});
+                karmaAmount = -1;
+                bronzeAmount = 0;
+                silverAmount = 0;
+                goldAmount = 0;
+                incrementer = {
+                    karma: -1
+                };
                 break;
             case '🥉':
-                db.set(sender, {karma: db.get(`${sender}.karma`), bronze: db.get(`${sender}.bronze`) - 1,  silver: db.get(`${sender}.silver`),  gold: db.get(`${sender}.gold`)});
+                karmaAmount = 0;
+                bronzeAmount = -1;
+                silverAmount = 0;
+                goldAmount = 0;
+                incrementer = {
+                    bronze: -1
+                };
                 break;
             case '🥈':
-                db.set(sender, {karma: db.get(`${sender}.karma`), bronze: db.get(`${sender}.bronze`),  silver: db.get(`${sender}.silver`) - 1,  gold: db.get(`${sender}.gold`)});
+                karmaAmount = 0;
+                bronzeAmount = 0;
+                silverAmount = -1;
+                goldAmount = 0;
+                incrementer = {
+                    silver: -1
+                };
                 break;
             case '🥇':
-                db.set(sender, {karma: db.get(`${sender}.karma`), bronze: db.get(`${sender}.bronze`),  silver: db.get(`${sender}.silver`),  gold: db.get(`${sender}.gold`) - 1});
+                karmaAmount = 0;
+                bronzeAmount = 0;
+                silverAmount = 0;
+                goldAmount = -1;
+                incrementer = {
+                    gold: -1
+                };
                 break;
         }
+        await mongo().then( async (mongoose) => {
+            const result = await userSchema.findById(sender + reaction.message.guild.id);
+            if (result == null) {
+                try {
+                    await new userSchema({
+                        _id: sender + reaction.message.guild.id,
+                        userId: sender,
+                        guildId: reaction.message.guild.id,
+                        karma: karmaAmount,
+                        bronze: bronzeAmount,
+                        silver: silverAmount,
+                        gold: goldAmount
+                    }).save()
+                } finally {
+                    mongoose.connection.close();
+                }
+            } else {
+                try {
+                    await userSchema.findOneAndUpdate({
+                        _id: sender + reaction.message.guild.id
+                    }, {
+                        $inc: incrementer
+                    }).exec()
+                } finally {
+                    mongoose.connection.close();
+                }
+            }
+        })
     }
 }
