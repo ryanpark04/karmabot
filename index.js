@@ -1,7 +1,11 @@
 const Discord = require('discord.js');
 const fs = require('fs');
 
-const client = new Discord.Client({ partials: Object.values(Discord.Constants.PartialTypes) });
+let intents = new Discord.Intents(Discord.Intents.NON_PRIVILEGED);
+intents.add('GUILD_MEMBERS')
+
+const client = new Discord.Client({ ws: {intents: intents}, partials: Object.values(Discord.Constants.PartialTypes) });
+
 client.commands = new Discord.Collection();
 
 const firebase = require('firebase');
@@ -9,17 +13,18 @@ require('firebase/firestore');
 
 if (!firebase.apps.length) {
     firebase.initializeApp({
-        apiKey: "AIzaSyAtrPd9zImoXTtaazrD-y2W7ug_H5mgiL0",
-        authDomain: "karmabot-9f785.firebaseapp.com",
-        projectId: "karmabot-9f785",
-        storageBucket: "karmabot-9f785.appspot.com",
-        messagingSenderId: "469704821729",
-        appId: "1:469704821729:web:021460ea3ae0cf75e6a0a0",
-        measurementId: "G-KVR9NQ26LZ"
+        apiKey: process.env.KARMABOT_API_KEY,
+        authDomain: process.env.KARMABOT_AUTH_DOMAIN,
+        projectId: process.env.KARMABOT_PROJECT_ID,
+        storageBucket: process.env.KARMABOT_STORAGE_BUCKET,
+        messagingSenderId: process.env.KARMABOT_MESSAGING_SENDER_ID,
+        appId: process.env.KARMABOT_APP_ID,
+        measurementId: process.env.KARMABOT_MEASUREMENT_ID
     });
 }
 
 const db = firebase.firestore();
+const batch = db.batch();
 const ref = db.collection('guilds');
 
 const prefix = 'k!';
@@ -78,11 +83,15 @@ client.on('message', async (message) => {
             client.commands.get('karma').execute(message, ref);
         }
 
+    } else if (command == 'leaderboard') {
+        client.commands.get('leaderboard').execute(message, ref, db);
+
     } else if (command == 'ping') {
         client.commands.get('ping').execute(message);
 
     } else if (command == 'about') {
         client.commands.get('about').execute(message);
+
     } 
 });
 

@@ -9,6 +9,7 @@ module.exports = {
     execute(message, otherUser, ref) {
         const user = otherUser.id;
         const guild = message.guild.id;
+        const isBot = otherUser.bot;
 
         const defaultData = {
             userId: user,
@@ -17,6 +18,7 @@ module.exports = {
             bronze: 0,
             silver: 0,
             gold: 0,
+            isBot: isBot,
             createdAt: firebase.firestore.FieldValue.serverTimestamp()
         }
 
@@ -29,12 +31,12 @@ module.exports = {
         }
 
         ref.doc(guild).get()
-        .then((docRef) => {
-            if (docRef.exists) {
+        .then((doc) => {
+            if (doc.exists) {
                 ref.doc(guild).collection('users').doc(user).get() 
-                .then((docRef) => {
-                    if (docRef.exists) {
-                        sendEmbed(docRef.data());
+                .then((doc) => {
+                    if (doc.exists) {
+                        sendEmbed(doc.data());
                     } else {
                         ref.doc(guild).collection('users').doc(user).set(defaultData);
                         sendEmbed(defaultData);
@@ -45,7 +47,7 @@ module.exports = {
                     guildId: guild,
                     createdAt: firebase.firestore.FieldValue.serverTimestamp()
                 })
-                .then((docRef) => {
+                .then((doc) => {
                     ref.doc(guild).collection('users').doc(user).set(defaultData);
                     sendEmbed(defaultData);
                 });

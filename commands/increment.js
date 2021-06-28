@@ -7,6 +7,7 @@ module.exports = {
     execute(reaction, user, ref) {
         const author = reaction.message.author.id;
         const guild = reaction.message.guild.id;
+        const isBot = reaction.message.author.bot;
 
         const update = (action) => {
             if (author == user.id) {
@@ -33,15 +34,16 @@ module.exports = {
                 bronze: bronze,
                 silver: silver,
                 gold: gold,
+                isBot: isBot,
                 createdAt: firebase.firestore.FieldValue.serverTimestamp()
             }
 
             ref.doc(guild).get()
-            .then((docRef) => {
-                if (docRef.exists) {
+            .then((doc) => {
+                if (doc.exists) {
                     ref.doc(guild).collection('users').doc(author).get() 
-                    .then((docRef) => {
-                        if (docRef.exists) {
+                    .then((doc) => {
+                        if (doc.exists) {
                             ref.doc(guild).collection('users').doc(author).update(increment);
                         } else {
                             ref.doc(guild).collection('users').doc(author).set(defaultData);
@@ -52,7 +54,7 @@ module.exports = {
                         guildId: guild,
                         createdAt: firebase.firestore.FieldValue.serverTimestamp()
                     })
-                    .then((docRef) => {
+                    .then((doc) => {
                         ref.doc(guild).collection('users').doc(author).set(defaultData);
                     });
                 }
