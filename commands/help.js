@@ -9,8 +9,10 @@ module.exports = {
 	    .setDescription("**React to someone else's message with...** \n ⬆️ or ⬇️ to upvote or downvote it \n 🥉 if you really like it \n 🥈 if you really really like it  \n 🥇 if you think it's amazing")
 	    .addFields(
 		    { name: `${prefix}karma`, value: client.commands.get('karma').description },
-		    { name: `${prefix}karma @user`, value: client.commands.get('otheruserskarma').description},
-		    { name: `${prefix}about`, value: client.commands.get('about').description},
+		    { name: `${prefix}karma \`@user\``, value: client.commands.get('otheruserskarma').description },
+            { name: `${prefix}leaderboard`, value: client.commands.get('leaderboard').description },
+		    { name: `${prefix}about`, value: client.commands.get('about').description }
+            
     	);
         message.channel.send(exampleEmbed);
     }

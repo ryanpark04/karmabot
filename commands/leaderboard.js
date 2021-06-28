@@ -5,27 +5,37 @@ require('firebase/firestore');
 
 module.exports = {
     name: 'leaderboard',
-    description: 'get the five users with the most karma',
+    description: 'display the five users in your server with the most karma',
     execute(message, ref, db) {
         const guild = message.guild.id;
 
         const sendEmbed = (data) => {
             const embed = new Discord.MessageEmbed()
-            .setTitle('Leaderboard')
+            .setAuthor(message.guild.name, message.guild.iconURL({ dynamic: true }))
             .setTimestamp();
+            let rankings = '';
+            let karmaValues = '';
+            let count = 0;
 
             Promise.all(data.map((value, index) => {
                 return (
                     message.guild.members.fetch(value.userId)
-                    .then(member => embed.addField(`${index + 1}. ` + member.user.username, `${value.karma} karma`))
+                    .then((member) => {
+                        rankings += `\`${count + 1}\` ` + member.user.username + '\n';
+                        karmaValues += `⬆️ \*\*${value.karma}\*\*\n`;
+                        count++;
+                    })
                     .catch(console.error)
                 );
             }))
             .then(() => {
+                embed.addFields(
+                    {name: 'Leaderboard', value: rankings, inline: true},
+                    {name: '\u200B', value: karmaValues, inline: true}
+                );
                 message.channel.send(embed)
             })
             .catch(console.error);
-            
         }
 
         const addUsers = (users) => {

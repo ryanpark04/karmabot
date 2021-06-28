@@ -53,8 +53,6 @@ module.exports = {
                 });
             }
         })
-        .catch((error) => {
-            console.error("Error adding document: ", error);
-        });
+        .catch(console.error);
     }
 }
