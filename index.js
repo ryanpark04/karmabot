@@ -2,12 +2,27 @@ const Discord = require('discord.js');
 const fs = require('fs');
 
 const client = new Discord.Client({ partials: Object.values(Discord.Constants.PartialTypes) });
+client.commands = new Discord.Collection();
+
+const firebase = require('firebase');
+require('firebase/firestore');
+
+if (!firebase.apps.length) {
+    firebase.initializeApp({
+        apiKey: "AIzaSyAtrPd9zImoXTtaazrD-y2W7ug_H5mgiL0",
+        authDomain: "karmabot-9f785.firebaseapp.com",
+        projectId: "karmabot-9f785",
+        storageBucket: "karmabot-9f785.appspot.com",
+        messagingSenderId: "469704821729",
+        appId: "1:469704821729:web:021460ea3ae0cf75e6a0a0",
+        measurementId: "G-KVR9NQ26LZ"
+    });
+}
+
+const db = firebase.firestore();
+const ref = db.collection('guilds');
 
 const prefix = 'k!';
-
-const mongo = require('./utils/mongo');
-
-client.commands = new Discord.Collection();
 
 const commandFiles = fs.readdirSync('./commands/').filter(file => file.endsWith('.js'));
 for (const file of commandFiles) {
@@ -19,20 +34,20 @@ client.once('ready', async () => {
     client.user.setActivity(`${prefix}help`, {type: 'PLAYING' });
     console.log('karmabot is online!');
 
-})
+});
 
 client.on('messageReactionAdd', async (reaction, user) => {
     if (reaction.partial) {
         await reaction.fetch();
     }
-    client.commands.get('increment').execute(reaction, user);
+    client.commands.get('increment').execute(reaction, user, ref);
 });
 
 client.on('messageReactionRemove', async (reaction, user) => {
     if (reaction.partial) {
         await reaction.fetch();
     }
-    client.commands.get('decrement').execute(reaction, user);
+    client.commands.get('decrement').execute(reaction, user, ref);
 });
 
 client.on('message', async (message) => {
@@ -44,7 +59,7 @@ client.on('message', async (message) => {
 
     if(!content.startsWith(prefix) || message.author.bot){
         if (content == '<@!775463174874464266>') {
-            client.commands.get(client.commands.get('mentioned').execute(message, prefix));
+            client.commands.get(client.commands.get('mentioned').execute(message, prefix, ref));
         }
         return;
     }
@@ -58,9 +73,9 @@ client.on('message', async (message) => {
     } else if (command == 'karma')  {
         const otherUser = getUserFromMention(args[0]);
         if (otherUser != undefined) {
-            client.commands.get('otheruserskarma').execute(message, otherUser);
+            client.commands.get('otheruserskarma').execute(message, otherUser, ref);
         } else {
-            client.commands.get('karma').execute(message);
+            client.commands.get('karma').execute(message, ref);
         }
 
     } else if (command == 'ping') {
@@ -68,12 +83,8 @@ client.on('message', async (message) => {
 
     } else if (command == 'about') {
         client.commands.get('about').execute(message);
-	    
-    } else if (command == 'stan') {
-        client.commands.get('stan').execute(message);
-    }
-	
-})
+    } 
+});
 
 function getUserFromMention(mention) {
     if (!mention){

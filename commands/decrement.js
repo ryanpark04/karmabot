@@ -1,89 +1,81 @@
-const Discord = require('discord.js');
-const mongo = require('../utils/mongo');
-const userSchema = require('../schemas/user-schema');
+const firebase = require('firebase');
+require('firebase/firestore');
 
 module.exports = {
     name: 'decrement',
-    description: "this decrements karma and awards",
-    async execute(reaction, user) {
-        const sender = reaction.message.author.id;
-        if (sender == user.id) {
-            return;
+    description: 'this decrements karma and awards',
+    execute(reaction, user, ref) {
+        const author = reaction.message.author.id;
+        const guild = reaction.message.guild.id;
+
+        const update = (action) => {
+            if (author == user.id) {
+                return;
+            }
+
+            const key = (action == 'upvote' || action == 'downvote') ? 'karma' : action;
+            const value = (action == 'downvote') ? firebase.firestore.FieldValue.increment(1) : firebase.firestore.FieldValue.increment(-1);
+
+            var increment = {}
+            increment[key] = value;
+
+            const karma = (action === 'upvote' || action == 'downvote') ? ((action == 'upvote') ? -1 : 1) : 0;
+            const bronze = action == 'bronze' ? -1 : 0;
+            const silver = action == 'silver' ? -1 : 0;
+            const gold = action == 'gold' ? -1 : 0;
+
+            const defaultData = {
+                userId: author,
+                guildId: guild,
+                karma: karma,
+                bronze: bronze,
+                silver: silver,
+                gold: gold,
+                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+            }
+
+            ref.doc(guild).get()
+            .then((docRef) => {
+                if (docRef.exists) {
+                    ref.doc(guild).collection('users').doc(author).get() 
+                    .then((docRef) => {
+                        if (docRef.exists) {
+                            ref.doc(guild).collection('users').doc(author).update(increment);
+                        } else {
+                            ref.doc(guild).collection('users').doc(author).set(defaultData);
+                        }
+                    })
+                } else {
+                    ref.doc(guild).set({
+                        guildId: guild,
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                    })
+                    .then((docRef) => {
+                        ref.doc(guild).collection('users').doc(author).set(defaultData);
+                    });
+                }
+            })
+            .catch((error) => {
+                console.error("Error adding document: ", error);
+            });
         }
+
         switch(reaction.emoji.name) {
-            case '⬇️':
-                karmaAmount = 1;
-                bronzeAmount = 0;
-                silverAmount = 0;
-                goldAmount = 0;
-                incrementer = {
-                    karma: 1
-                };
+            case '⬆️': 
+                update('upvote');
                 break;
-            case '⬆️':
-                karmaAmount = -1;
-                bronzeAmount = 0;
-                silverAmount = 0;
-                goldAmount = 0;
-                incrementer = {
-                    karma: -1
-                };
+            case '⬇️':
+                update('downvote');
                 break;
             case '🥉':
-                karmaAmount = 0;
-                bronzeAmount = -1;
-                silverAmount = 0;
-                goldAmount = 0;
-                incrementer = {
-                    bronze: -1
-                };
+                update('bronze');
                 break;
             case '🥈':
-                karmaAmount = 0;
-                bronzeAmount = 0;
-                silverAmount = -1;
-                goldAmount = 0;
-                incrementer = {
-                    silver: -1
-                };
+                update('silver');
                 break;
             case '🥇':
-                karmaAmount = 0;
-                bronzeAmount = 0;
-                silverAmount = 0;
-                goldAmount = -1;
-                incrementer = {
-                    gold: -1
-                };
+                update('gold');
                 break;
-        }
-        await mongo().then( async (mongoose) => {
-            const result = await userSchema.findById(sender + reaction.message.guild.id);
-            if (result == null) {
-                try {
-                    await new userSchema({
-                        _id: sender + reaction.message.guild.id,
-                        userId: sender,
-                        guildId: reaction.message.guild.id,
-                        karma: karmaAmount,
-                        bronze: bronzeAmount,
-                        silver: silverAmount,
-                        gold: goldAmount
-                    }).save()
-                } finally {
-                    mongoose.connection.close();
-                }
-            } else {
-                try {
-                    await userSchema.findOneAndUpdate({
-                        _id: sender + reaction.message.guild.id
-                    }, {
-                        $inc: incrementer
-                    }).exec()
-                } finally {
-                    mongoose.connection.close();
-                }
-            }
-        })
+        } 
     }
 }

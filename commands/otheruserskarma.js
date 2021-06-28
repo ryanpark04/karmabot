@@ -1,44 +1,58 @@
 const Discord = require('discord.js');
-const mongo = require('../utils/mongo');
-const userSchema = require('../schemas/user-schema');
+
+const firebase = require('firebase');
+require('firebase/firestore');
 
 module.exports = {
     name: 'otheruserskarma',
     description: "displays another user's karma and awards",
-    async execute(message, otherUser) {
-        await mongo().then( async (mongoose) => {
-            const result = await userSchema.findById(otherUser.id + message.guild.id);
-            if (result == null) {
-                try {
-                    await new userSchema({
-                        _id: otherUser.id + message.guild.id,
-                        userId: otherUser.id,
-                        guildId: message.guild.id,
-                        karma: 0,
-                        bronze: 0,
-                        silver: 0,
-                        gold: 0
-                    }).save()
-                    karmaAmount = 0;
-                    bronzeAmount = 0;
-                    silverAmount = 0;
-                    goldAmount = 0;
-                } finally {
-                    mongoose.connection.close();
-                }
+    execute(message, otherUser, ref) {
+        const user = otherUser.id;
+        const guild = message.guild.id;
+
+        const defaultData = {
+            userId: user,
+            guildId: guild,
+            karma: 0,
+            bronze: 0,
+            silver: 0,
+            gold: 0,
+            createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        }
+
+        const sendEmbed = (data) => {
+            const embed = new Discord.MessageEmbed()
+            .setAuthor(otherUser.username, otherUser.displayAvatarURL({ dynamic: true }))
+            .setDescription(`⬆️ **${data.karma}**` + '\xa0\xa0\xa0\xa0' + `🥉 **${data.bronze}**` + '\xa0\xa0\xa0\xa0' + `🥈 **${data.silver}**` + '\xa0\xa0\xa0\xa0' + `🥇 **${data.silver}**`)
+            .setTimestamp();
+            message.channel.send(embed); 
+        }
+
+        ref.doc(guild).get()
+        .then((docRef) => {
+            if (docRef.exists) {
+                ref.doc(guild).collection('users').doc(user).get() 
+                .then((docRef) => {
+                    if (docRef.exists) {
+                        sendEmbed(docRef.data());
+                    } else {
+                        ref.doc(guild).collection('users').doc(user).set(defaultData);
+                        sendEmbed(defaultData);
+                    }
+                })
             } else {
-                karmaAmount = result.karma;
-                bronzeAmount = result.bronze;
-                silverAmount = result.silver;
-                goldAmount = result.gold;
-                mongoose.connection.close();
+                ref.doc(guild).set({
+                    guildId: guild,
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                })
+                .then((docRef) => {
+                    ref.doc(guild).collection('users').doc(user).set(defaultData);
+                    sendEmbed(defaultData);
+                });
             }
         })
-
-        const embed = new Discord.MessageEmbed()
-            .setAuthor(otherUser.username, otherUser.displayAvatarURL({ dynamic: true }))
-            .setDescription(`⬆️ **${karmaAmount}**` + '\xa0\xa0\xa0\xa0' + `🥉 **${bronzeAmount}**` + '\xa0\xa0\xa0\xa0' + `🥈 **${silverAmount}**` + '\xa0\xa0\xa0\xa0' + `🥇 **${goldAmount}**`)
-            .setTimestamp();
-        message.channel.send(embed); 
+        .catch((error) => {
+            console.error("Error adding document: ", error);
+        });
     }
 }

@@ -2,7 +2,7 @@ const Discord = require('discord.js');
 
 module.exports = {
     name: 'help',
-    description: "displays instructions and list of commands",
+    description: 'displays instructions and list of commands',
     execute(message, client, prefix) {
         const exampleEmbed = new Discord.MessageEmbed()
         .setAuthor(client.user.username, client.user.displayAvatarURL({ dynamic: true }))
