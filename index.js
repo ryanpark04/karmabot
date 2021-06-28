@@ -64,7 +64,7 @@ client.on('message', async (message) => {
 
     if(!content.startsWith(prefix) || message.author.bot){
         if (content == '<@!775463174874464266>') {
-            client.commands.get(client.commands.get('mentioned').execute(message, prefix, ref));
+            client.commands.get(client.commands.get('mentioned').execute(message, prefix));
         }
         return;
     }

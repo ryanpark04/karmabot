@@ -11,8 +11,7 @@ module.exports = {
 		    { name: `${prefix}karma`, value: client.commands.get('karma').description },
 		    { name: `${prefix}karma \`@user\``, value: client.commands.get('otheruserskarma').description },
             { name: `${prefix}leaderboard`, value: client.commands.get('leaderboard').description },
-		    { name: `${prefix}about`, value: client.commands.get('about').description }
-            
+		    { name: `${prefix}about`, value: client.commands.get('about').description } 
     	);
         message.channel.send(exampleEmbed);
     }

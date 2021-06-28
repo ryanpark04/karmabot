@@ -46,7 +46,7 @@ module.exports = {
                         } else {
                             ref.doc(guild).collection('users').doc(author).set(defaultData);
                         }
-                    })
+                    });
                 } else {
                     ref.doc(guild).set({
                         guildId: guild,
