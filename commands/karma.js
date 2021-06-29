@@ -25,7 +25,7 @@ module.exports = {
         const sendEmbed = (data) => {
             const embed = new Discord.MessageEmbed()
             .setAuthor(message.author.username, message.author.displayAvatarURL({ dynamic: true }))
-            .setDescription(`⬆️ **${data.karma}**` + '\xa0\xa0\xa0\xa0' + `🥉 **${data.bronze}**` + '\xa0\xa0\xa0\xa0' + `🥈 **${data.silver}**` + '\xa0\xa0\xa0\xa0' + `🥇 **${data.silver}**`)
+            .setDescription(`⬆️ **${data.karma}**` + '\xa0\xa0\xa0\xa0' + `🥉 **${data.bronze}**` + '\xa0\xa0\xa0\xa0' + `🥈 **${data.silver}**` + '\xa0\xa0\xa0\xa0' + `🥇 **${data.gold}**`)
             .setTimestamp();
             message.channel.send(embed); 
         }
