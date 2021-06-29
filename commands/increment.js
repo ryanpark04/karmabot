@@ -12,20 +12,20 @@ module.exports = {
         const update = (action) => {
             if (author == user.id) {
                 reaction.users.remove(user.id);
-                user.send(`you can't ${action} your own message`);
+                user.send(`you can't ${(action == 'bronze' || action == 'silver' || action == 'gold') ? 'award': action} your own message`);
                 return;
             }
 
-            const key = (action === 'upvote' || action === 'downvote') ? 'karma' : action;
-            const value = (action === 'downvote') ? firebase.firestore.FieldValue.increment(-1) : firebase.firestore.FieldValue.increment(1);
+            const key = (action == 'upvote' || action == 'downvote') ? 'karma' : action;
+            const value = (action == 'downvote') ? firebase.firestore.FieldValue.increment(-1) : firebase.firestore.FieldValue.increment(1);
 
             var increment = {}
             increment[key] = value;
 
-            const karma = (action === 'upvote' || action === 'downvote') ? ((action === 'upvote') ? 1 : -1) : 0;
-            const bronze = (action === 'bronze') ? 1 : 0;
-            const silver = (action === 'silver') ? 1 : 0;
-            const gold = (action === 'gold') ? 1 : 0;
+            const karma = (action == 'upvote' || action == 'downvote') ? ((action == 'upvote') ? 1 : -1) : 0;
+            const bronze = (action == 'bronze') ? 1 : 0;
+            const silver = (action == 'silver') ? 1 : 0;
+            const gold = (action == 'gold') ? 1 : 0;
 
             const defaultData = {
                 userId: author,

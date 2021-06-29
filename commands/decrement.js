@@ -14,16 +14,16 @@ module.exports = {
                 return;
             }
 
-            const key = (action === 'upvote' || action === 'downvote') ? 'karma' : action;
-            const value = (action === 'downvote') ? firebase.firestore.FieldValue.increment(1) : firebase.firestore.FieldValue.increment(-1);
+            const key = (action == 'upvote' || action == 'downvote') ? 'karma' : action;
+            const value = (action == 'downvote') ? firebase.firestore.FieldValue.increment(1) : firebase.firestore.FieldValue.increment(-1);
 
             let increment = {}
             increment[key] = value;
 
-            const karma = (action === 'upvote' || action === 'downvote') ? ((action === 'upvote') ? -1 : 1) : 0;
-            const bronze = (action === 'bronze') ? -1 : 0;
-            const silver = (action === 'silver') ? -1 : 0;
-            const gold = (action === 'gold') ? -1 : 0;
+            const karma = (action == 'upvote' || action == 'downvote') ? ((action == 'upvote') ? -1 : 1) : 0;
+            const bronze = (action == 'bronze') ? -1 : 0;
+            const silver = (action == 'silver') ? -1 : 0;
+            const gold = (action == 'gold') ? -1 : 0;
 
             const defaultData = {
                 userId: author,
