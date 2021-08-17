@@ -1,6 +1,8 @@
 const Discord = require('discord.js');
 const fs = require('fs');
 
+//test
+
 let intents = new Discord.Intents(Discord.Intents.NON_PRIVILEGED);
 intents.add('GUILD_MEMBERS')
 
