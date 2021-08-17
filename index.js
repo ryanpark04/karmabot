@@ -1,7 +1,3 @@
-//test
-//test
-//test
-
 const Discord = require('discord.js');
 const fs = require('fs');
 
